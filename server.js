@@ -142,10 +142,23 @@ const basicStrategy = new BasicStrategy(function(username, password, callback) {
 passport.use(basicStrategy);
 app.use(passport.initialize());
 
-app.get('/login',
-  passport.authenticate('basic', {session: true}),
-  (req, res) => res.json({user: req.user.apiRepr()})
-  );
+app.post('/login', (req, res, next) => {
+  passport.authenticate('basic', {session: false}, function(err, user) {
+    if (err) {
+      return next(err);
+    }
+    console.log(user);
+    // if (!user) {
+    //   return res.status(422).json({message: 'User does not exist'});
+    // }
+    // req.logIn(user, function(err) {
+    //   if (err) {
+    //     return next(err);
+    //   }
+    //   return res.status(200).json({message: 'Login successful'});
+    // });
+  })(req, res, next);
+});
 
 // Start the server
 let server;

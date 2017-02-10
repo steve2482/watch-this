@@ -142,8 +142,8 @@ $(document).ready(function() {
     };
     $.ajax({
       url: apiUrl + '/login',
-      type: 'GET',
-      data: JSON.stringify(user),
+      type: 'POST',
+      data: user,
       contentType: 'application/json',
       success: function() {
         alert('You are now signed in');
