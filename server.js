@@ -1,4 +1,3 @@
-const {BasicStrategy} = require('passport-http');
 const express = require('express');
 const app = express();
 const request = require('request');
@@ -7,8 +6,11 @@ const jsonParser = require('body-parser').json();
 const mongoose = require('mongoose');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 require('dotenv').config();
 require('./config/passport')(passport);
+
+
 
 const {User, Movie} = require('./models');
 
@@ -20,20 +22,12 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(session({secret: 'secret'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static('public'));
 
 require('./router')(app, passport);
-
-// app.get('/', function(req, res) {
-//   let env = process.env;
-//   res.render('pages/index', {
-//     env: {
-//       ENVIRONMENT: env.ENVIRONMENT
-//     }
-//   });
-// });
 
 // User search api call
 app.get('/usersearch', jsonParser, (req, res) => {

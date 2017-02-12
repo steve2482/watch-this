@@ -4,6 +4,8 @@ const LocalStrategy = require('../passort-local').Strategy;
 // Load User Model==================================================
 const User = require('../models');
 
+// =================================================================
+
 module.exports = function(passport) {
   passport.serializeUser(function(user, done) {
     done(null, user.id);
@@ -30,21 +32,20 @@ module.exports = function(passport) {
         }
         if (user) {
           return done(null, false, req.status(422).json({message: 'User already exits'}));
-        } else {
-          // If no exiting user, create a new user
-          let newUser = new User();
-          newUser.email = email;
-          newUser.password = newUser.hashPassword(password);
-          newUser.firstName = firstName;
-          newUser.lastName = lastName;
-          newUser.movieIds = [];
-          newUser.save(function(err) {
-            if (err) {
-              throw err;
-            }
-            return done(null, newUser);
-          });
         }
+        // If no exiting user, create a new user
+        let newUser = new User();
+        newUser.email = email;
+        newUser.password = newUser.hashPassword(password);
+        newUser.firstName = firstName;
+        newUser.lastName = lastName;
+        newUser.movieIds = [];
+        newUser.save(function(err) {
+          if (err) {
+            throw err;
+          }
+          return done(null, newUser);
+        });
       });
     });
   }));

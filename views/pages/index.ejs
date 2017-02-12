@@ -10,8 +10,25 @@
 <!-- Header -->
 	<div class="header container">
 		<h1>Watch This!</h1>
-		<button class="button" id="sign-in">Sign In</button>
-		<button class="button" id="toRegister">Register</button>
+
+		<div class="nav-buttons">
+		<button class="button" id="sign-in">Log In</button>
+		<button class="button" id="toRegister">Sign Up</button>
+		</div>
+
+	</div>
+
+<!-- Registration Form -->
+
+	<div class="registration container">
+		<form id="registration-form">
+			<input type="email" name="" placeholder="yourEmail@email.com">
+			<input id="regPassword" type="password" placeholder="Password">
+			<input type="password" name="" placeholder="Retype Password">
+			<input id="firstName" type="text" placeholder="First Name">
+			<input id="lastName" type="text" placeholder="Last Name">
+			<button class="button" id="register" type="submit">Register</button>
+		</form>
 	</div>
 
 <!-- Footer -->
@@ -29,7 +46,7 @@
   <script type="text/javascript">
   	let ENV = <%- JSON.stringify(env) %>;
   </script>
-  <script type="text/javascript" src="./app.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
 	
 </body>
 </html>
