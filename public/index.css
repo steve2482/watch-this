@@ -16,22 +16,22 @@ ul {
 	display: none;
 }
 
-.results {
-	height: 750px;
-	width: 50%;
-	margin-left: 25%;
-	float: left;
-	overflow: auto;
-}
+// .results {
+// 	height: 750px;
+// 	width: 50%;
+// 	margin-left: 25%;
+// 	float: left;
+// 	overflow: auto;
+// }
 
-.user-list {
-	height: 750px;
-	width: 22%;
-	margin-left: 76%;
-	overflow: auto;
-}
+// .user-list {
+// 	height: 750px;
+// 	width: 22%;
+// 	margin-left: 76%;
+// 	overflow: auto;
+// }
 
-.movie-poster {
-	margin-top: 20px;
-	height: 225px;
-}
+// .movie-poster {
+// 	margin-top: 20px;
+// 	height: 225px;
+// }

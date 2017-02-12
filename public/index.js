@@ -103,18 +103,9 @@ $(document).ready(function() {
 
   $('#toRegister').click(function(e) {
     e.preventDefault();
-    $('.registration').show();
-    $('.nav-buttons').hide();
-  });
-
-  $('#register').click(function(e) {
-    e.preventDefault();
     $.ajax({
-      url: apiUrl + '/sign-up',
-      type: 'POST',
-      success: function() {
-        alert('You have successfully registered!');
-      }
+      url: apiUrl + '/signup',
+      type: 'GET'
     });
   });
 });

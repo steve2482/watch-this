@@ -1,37 +1,74 @@
 require('dotenv').config();
 module.exports = function(app, passport) {
-	// Home page
+	// =====================================
+	// HOME PAGE (with login links) ========
+	// =====================================
   app.get('/', function(req, res) {
-    res.render('pages/index', {
+    // load the index.ejs file
+    res.render('pages/index.ejs', {
       env: {
         ENVIRONMENT: process.env.ENVIRONMENT
       }
     });
   });
 
-	// Login
+	// =====================================
+	// LOGIN ===============================
+	// =====================================
+	// show the login form
   app.get('/login', function(req, res) {
-    res.render('pages/login');
+		// render the page and pass in any flash data if it exists
+    res.render('pages/login.ejs');
   });
 
-  // Sign Up
+	// process the login form
+	// app.post('/login', do all our passport stuff here);
 
-  app.post('/sign-up', passport.authenticate('local-signup', {
-    successRedirect: 'pages/user-home',
-    failureRedirect: '/'
+	// =====================================
+	// SIGNUP ==============================
+	// =====================================
+	// show the signup form
+  app.get('/signup', function(req, res) {
+		// render the page and pass in any flash data if it exists
+    res.render('pages/sign-up.ejs', {
+      env: {
+        ENVIRONMENT: process.env.ENVIRONMENT
+      }
+    });
+  });
+
+	// process the signup form
+  app.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/user-home', // redirect to the user home page
+    failureRedirect: '/' // redirect to main page
   }));
 
-  // Logout
+	// =====================================
+	// PROFILE SECTION =====================
+	// =====================================
+	// we will want this protected so you have to be logged in to visit
+	// we will use route middleware to verify this (the isLoggedIn function)
+  app.get('/profile', isLoggedIn, function(req, res) {
+    res.render('profile.ejs', {
+      user: req.user // get the user out of session and pass to template
+    });
+  });
+
+	// =====================================
+	// LOGOUT ==============================
+	// =====================================
   app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
   });
 };
 
-  // Make sure user is logged in
+	// rout middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
+  // if user is authenticate in the sessio,. carry on
   if (req.isAuthenticated()) {
     return next();
   }
+  // if they are not, redirect them to the home page
   res.redirect('/');
 }

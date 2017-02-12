@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Sign Up</title>
+	<title>Watch This!</title>
 </head>
 <body>
 
@@ -11,17 +11,34 @@
 		<h1>Watch This!</h1>
 	</div>
 
-	<!-- Registration Form -->
+<!-- Registration Form -->
 
 	<div class="registration container">
-		<form id="registration-form">
+		<form action="/signup" method="post" id="registration-form">
 			<input type="email" name="" placeholder="yourEmail@email.com">
 			<input id="regPassword" type="password" placeholder="Password">
 			<input type="password" name="" placeholder="Retype Password">
 			<input id="firstName" type="text" placeholder="First Name">
-			<input id="lastName" type="text" placeholder="Last Name">			
-			<button class="button" id="register">Register</button>
+			<input id="lastName" type="text" placeholder="Last Name">
+			<button class="button" id="register" type="submit">Register</button>
 		</form>
 	</div>
 
-</body>	
+<!-- Footer -->
+
+	<footer class="container">
+		<p>Built by Steve Brown</p>
+	</footer>
+
+<!-- Scripts -->
+
+	<script
+  src="https://code.jquery.com/jquery-2.2.4.js"
+  integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  	let ENV = <%- JSON.stringify(env) %>;
+  </script>
+  <script type="text/javascript" src="./index.js"></script>
+</body>
+</html>	

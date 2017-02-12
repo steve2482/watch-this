@@ -10,8 +10,6 @@ const session = require('express-session');
 require('dotenv').config();
 require('./config/passport')(passport);
 
-
-
 const {User, Movie} = require('./models');
 
 mongoose.Promise = global.Promise;
