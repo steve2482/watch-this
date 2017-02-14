@@ -1,5 +1,6 @@
 require('dotenv').config();
 module.exports = function(app, passport) {
+  console.log(passport);
 	// =====================================
 	// HOME PAGE (with login links) ========
 	// =====================================
@@ -17,7 +18,7 @@ module.exports = function(app, passport) {
 	// =====================================
 	// show the login form
   app.get('/login', function(req, res) {
-		// render the page and pass in any flash data if it exists
+		// render the page
     res.render('pages/login.ejs');
   });
 
@@ -29,7 +30,7 @@ module.exports = function(app, passport) {
 	// =====================================
 	// show the signup form
   app.get('/signup', function(req, res) {
-		// render the page and pass in any flash data if it exists
+		// render the page
     res.render('pages/sign-up.ejs', {
       env: {
         ENVIRONMENT: process.env.ENVIRONMENT
@@ -40,7 +41,7 @@ module.exports = function(app, passport) {
 	// process the signup form
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/user-home', // redirect to the user home page
-    failureRedirect: '/' // redirect to main page
+    failureRedirect: '/signup' // redirect to sign up page
   }));
 
 	// =====================================
@@ -48,8 +49,8 @@ module.exports = function(app, passport) {
 	// =====================================
 	// we will want this protected so you have to be logged in to visit
 	// we will use route middleware to verify this (the isLoggedIn function)
-  app.get('/profile', isLoggedIn, function(req, res) {
-    res.render('profile.ejs', {
+  app.get('/user/home', isLoggedIn, function(req, res) {
+    res.render('user-home.ejs', {
       user: req.user // get the user out of session and pass to template
     });
   });

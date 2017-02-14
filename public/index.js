@@ -108,4 +108,19 @@ $(document).ready(function() {
       type: 'GET'
     });
   });
+
+  $('#register').click(function(e) {
+    e.preventDefault();
+    let user = {
+      email: $('#email').val(),
+      password: $('#regpassword').val(),
+      firstName: $('#firstName').val(),
+      lastName: $('#lastName').val()
+    };
+    $.ajax({
+      url: apiUrl = '/signup',
+      type: 'POST',
+      data: user
+    });
+  });
 });
