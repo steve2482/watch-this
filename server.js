@@ -11,6 +11,7 @@ require('dotenv').config();
 require('./config/passport')(passport);
 
 const {User, Movie} = require('./models');
+app.use(bodyParser.json());
 
 mongoose.Promise = global.Promise;
 
@@ -18,7 +19,6 @@ const {PORT, DATABASE_URL} = require('./config');
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({secret: 'secret'}));
 app.use(passport.initialize());

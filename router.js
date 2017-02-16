@@ -1,6 +1,5 @@
 require('dotenv').config();
 module.exports = function(app, passport) {
-  console.log(passport);
 	// =====================================
 	// HOME PAGE (with login links) ========
 	// =====================================
@@ -42,7 +41,8 @@ module.exports = function(app, passport) {
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/user-home', // redirect to the user home page
     failureRedirect: '/signup' // redirect to sign up page
-  }));
+  })
+    );
 
 	// =====================================
 	// PROFILE SECTION =====================

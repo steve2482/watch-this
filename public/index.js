@@ -113,14 +113,15 @@ $(document).ready(function() {
     e.preventDefault();
     let user = {
       email: $('#email').val(),
-      password: $('#regpassword').val(),
+      password: $('#regPassword').val(),
       firstName: $('#firstName').val(),
       lastName: $('#lastName').val()
     };
     $.ajax({
       url: apiUrl = '/signup',
       type: 'POST',
-      data: user
+      contentType: 'application/json',
+      data: JSON.stringify(user)
     });
   });
 });
