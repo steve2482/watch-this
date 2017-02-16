@@ -3,18 +3,25 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Watch This!</title>
-	<link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 
 <!-- Header -->
 	<div class="header container">
 		<h1>Watch This!</h1>
+	</div>
 
-		<div class="nav-buttons">
-		<button class="button" id="sign-in">Log In</button>
-		<button class="button" id="toRegister">Sign Up</button>
-		</div>
+<!-- Registration Form -->
+
+	<div class="registration container">
+		<form id="registration-form">
+			<input id="email" type="email" name="email" placeholder="yourEmail@email.com">
+			<input id="regPassword" type="password" name="password" placeholder="Password">
+			<input type="password" name="password2" placeholder="Retype Password">
+			<input id="firstName" type="text" name="firstName" placeholder="First Name">
+			<input id="lastName" type="text" name="lastName" placeholder="Last Name">
+			<button class="button" id="register" type="submit">Register</button>
+		</form>
 	</div>
 
 <!-- Footer -->
@@ -33,6 +40,5 @@
   	let ENV = <%- JSON.stringify(env) %>;
   </script>
   <script type="text/javascript" src="./index.js"></script>
-	
 </body>
-</html>
+</html>	

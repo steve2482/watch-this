@@ -99,55 +99,29 @@ $(document).ready(function() {
     getSearchData(searchKeyword, displaySearchData);
   }
 
-  // To Register button event listener----------------------------------
+  // Sign up button event listener===============================
+
   $('#toRegister').click(function(e) {
     e.preventDefault();
-    $('.registration').show();
-    $('.form').hide();
+    $.ajax({
+      url: apiUrl + '/signup',
+      type: 'GET'
+    });
   });
 
-  // User Registration-----------------------------------------------
-  function addUser() {
+  $('#register').click(function(e) {
+    e.preventDefault();
     let user = {
-      userName: $('#regUserName').val(),
+      email: $('#email').val(),
       password: $('#regPassword').val(),
       firstName: $('#firstName').val(),
       lastName: $('#lastName').val()
     };
     $.ajax({
-      url: apiUrl + '/register',
+      url: apiUrl = '/signup',
       type: 'POST',
-      data: JSON.stringify(user),
       contentType: 'application/json',
-      success: function() {
-        alert(`You are now registered. Let's add some movies to your "Must Watch List"!`);
-      }
-    });
-  }
-
-  // Register submit button-----------------------------------------------
-  $('#register').click(function(e) {
-    e.preventDefault();
-    addUser();
-    $('.registration').hide();
-    $('.form').show();
-  });
-
-  // User sign in---------------------------------------------------------
-  $('#sign-in').click(function(e) {
-    e.preventDefault();
-    let user = {
-      userName: $('.userName').val(),
-      password: $('.password').val()
-    };
-    $.ajax({
-      url: apiUrl + '/login',
-      type: 'GET',
-      data: JSON.stringify(user),
-      contentType: 'application/json',
-      success: function() {
-        alert('You are now signed in');
-      }
+      data: JSON.stringify(user)
     });
   });
 });
