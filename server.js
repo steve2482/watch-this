@@ -40,11 +40,11 @@ app.get('/usersearch', jsonParser, (req, res) => {
       error.response = response;
       throw error;
     }
-    return response;
+    return response.json();
   })
-  .then(response => response.json())
-  .then(response => {
-    res.json(response);
+  .then(response => res.json(response))
+  .catch(err => {
+    return res.json(err);
   });
 });
 
