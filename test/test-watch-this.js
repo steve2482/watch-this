@@ -116,40 +116,30 @@ describe('testing', function() {
       let apiKey = process.env.TMDB_API_KEY;
       let tmdbApi;
       const expectedJson = {
-        results: [
-          {
-            movie: 1
-          },
-          {
-            movie: 2
-          }
-        ]
+        results: [ { movie: 1 }, { movie: 2 } ]
       };
 
-      // before(function() {
-      //   nock.disableNetConnect();
-      // });
-
-      // after(function() {
-      //   nock.enableNetConnect();
-      // });
-
-      beforeEach(function() {
-        tmdbApi = nock('https://api.themoviedb.org')
-          .get('/3/search/movie')
-          .query({
-            api_key: apiKey,
-            query: 'undefined'
-          });
+      beforeEach(() => {
+        tmdbApi = nock('https://api.themoviedb.org/3/search')
+        .get('/movie')
+        .query({
+          api_key: apiKey,
+          query: 'cars'
+        })
+        .reply(200, expectedJson);
       });
+
       it('should return movie objects and a 200 status', function(done) {
-        const api = tmdbApi.reply(200, expectedJson);
         chai.request(app)
           .get('/usersearch')
-          .then(function(res, err) {
-            expect(api.isDone()).to.be.true;
-            expect(res.body).to.deep.equal(expectedJson);
-            done();
+          .query({usersearch: 'cars'})
+          .then((res, err) => {
+            setTimeout(() => {
+              res.should.have.status(200);
+              expect(tmdbApi.isDone()).to.be.true;
+              expect(res.body).to.deep.equal(expectedJson);
+              done();
+            });
           });
       });
     });
