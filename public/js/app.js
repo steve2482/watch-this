@@ -1,5 +1,5 @@
 let apiUrl;
-if (ENV.ENVIRONMENT === 'development') {
+if (ENV === 'development') {
   apiUrl = 'http://localhost:8080';
 } else {
   apiUrl = 'https://watch-this.herokuapp.com';
@@ -9,7 +9,9 @@ if (ENV.ENVIRONMENT === 'development') {
 // =============================================================
 
 $(document).ready(function() {
+  // Display user movie list
   getAndDisplayUserMovieList();
+  // Get usersearch results
   $('#search').on('click', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
@@ -57,15 +59,20 @@ $(document).ready(function() {
   // Get and Display Search Data=================================
   // ============================================================
   function getSearchData(searchKeyword, callbackFn) {
+    console.log('requesting data from server');
     let search = {
       usersearch: searchKeyword
     };
     $.ajax({
-      url: apiUrl + '/usersearch',
+      url: apiUrl + '/users/usersearch',
       type: 'GET',
       data: search,
       success: function(data) {
+        console.log(data);
         callbackFn(data);
+      },
+      error: function(err) {
+        console.log(err);
       }
     });
   }
@@ -89,6 +96,7 @@ $(document).ready(function() {
   }
 
   function getAndDisplaySearchData(searchKeyword) {
+    console.log('Search Keyword: ', searchKeyword)
     getSearchData(searchKeyword, displaySearchData);
   }
 
@@ -131,22 +139,22 @@ $(document).ready(function() {
 
   // User sign in==================================================
   // ==============================================================
-  // $('#sign-in').click(function(e) {
-  //   e.preventDefault();
-  //   let user = {
-  //     userName: $('.userName').val(),
-  //     password: $('.password').val()
-  //   };
-  //   $.ajax({
-  //     url: apiUrl + '/login',
-  //     type: 'GET',
-  //     data: JSON.stringify(user),
-  //     contentType: 'application/json',
-  //     success: function() {
-  //       alert('You are now signed in');
-  //     }
-  //   });
-  // });
+  $('#sign-in').click(function(e) {
+    e.preventDefault();
+    let user = {
+      userName: $('.userName').val(),
+      password: $('.password').val()
+    };
+    $.ajax({
+      url: apiUrl + '/login',
+      type: 'GET',
+      data: JSON.stringify(user),
+      contentType: 'application/json',
+      success: function() {
+        alert('You are now signed in');
+      }
+    });
+  });
 
   // Add movie to user list========================================
   // ==============================================================
