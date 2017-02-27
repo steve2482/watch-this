@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res) {
+  let env = process.env;
   res.render('index');
 });
 

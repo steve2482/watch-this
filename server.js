@@ -18,6 +18,9 @@ const users = require('./routes/users');
 // Initialize App
 const app = express();
 
+mongoose.Promise = global.Promise
+app.locals.env = process.env.ENVIRONMENT;
+
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));

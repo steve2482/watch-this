@@ -1,9 +1,9 @@
 let apiUrl;
-// if (ENV.ENVIRONMENT === 'development') {
+if (ENV === 'development') {
   apiUrl = 'http://localhost:8080';
-// } else {
-//   apiUrl = 'https://watch-this.herokuapp.com';
-// }
+} else {
+  apiUrl = 'https://watch-this.herokuapp.com';
+}
 
 // Document Ready===============================================
 // =============================================================
@@ -64,11 +64,15 @@ $(document).ready(function() {
       usersearch: searchKeyword
     };
     $.ajax({
-      url: apiUrl + 'users/usersearch',
+      url: apiUrl + '/users/usersearch',
       type: 'GET',
       data: search,
       success: function(data) {
+        console.log(data);
         callbackFn(data);
+      },
+      error: function(err) {
+        console.log(err);
       }
     });
   }
@@ -92,6 +96,7 @@ $(document).ready(function() {
   }
 
   function getAndDisplaySearchData(searchKeyword) {
+    console.log('Search Keyword: ', searchKeyword)
     getSearchData(searchKeyword, displaySearchData);
   }
 
