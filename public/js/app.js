@@ -9,10 +9,13 @@ if (ENV === 'development') {
 // =============================================================
 
 $(document).ready(function() {
-  // Display user movie list
-  getAndDisplayUserMovieList();
-  // Display most watched list
-  getAndDisplayWatchedList();
+  if (LOGGED_IN) {
+    // Display user movie list
+    getAndDisplayUserMovieList();
+    // Display most watched list
+    getAndDisplayWatchedList();
+  }
+
   // Get usersearch results
   $('#search').on('click', function(e) {
     e.preventDefault();
@@ -31,6 +34,9 @@ $(document).ready(function() {
       url: apiUrl + '/users/user-movies',
       type: 'GET',
       success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         callbackFn(data);
       },
       error: function(err) {
@@ -67,6 +73,9 @@ $(document).ready(function() {
       type: 'GET',
       data: search,
       success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         callbackFn(data);
       },
       error: function(err) {
@@ -104,8 +113,10 @@ $(document).ready(function() {
       url: apiUrl + '/users/watched',
       type: 'GET',
       success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         callbackFn(data);
-        console.log(data);
       },
       error: function(err) {
         throw err;
@@ -142,7 +153,10 @@ $(document).ready(function() {
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         alert('Movie Added');
         getAndDisplayUserMovieList();
       }
@@ -160,7 +174,10 @@ $(document).ready(function() {
       type: 'PUT',
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
+        if (data.redirect) {
+          window.location = data.redirect;
+        }
         alert('Movie Removed');
         getAndDisplayUserMovieList();
       }
@@ -181,7 +198,10 @@ $(document).ready(function() {
       type: 'post',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         alert('Movie Watched');
         getAndDisplayWatchedList();
       }
@@ -201,7 +221,10 @@ $(document).ready(function() {
       type: 'POST',
       data: JSON.stringify(movie),
       contentType: 'application/json',
-      success: function() {
+      success: function(data) {
+        if (data.redirect) {
+          return window.location = data.redirect;
+        }
         alert('Movie Added');
         getAndDisplayUserMovieList();
       }
