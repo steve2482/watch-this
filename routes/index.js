@@ -8,6 +8,11 @@ router.get('/', ensureAuthenticated, function(req, res) {
   res.render('index', { loggedIn: isLoggedIn });
 });
 
+router.get('/logged-in', (req, res) => {
+	let isLoggedIn = !!req.user;
+	res.send({isLoggedIn: isLoggedIn});
+});
+
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

@@ -9,11 +9,41 @@ if (ENV === 'development') {
 // =============================================================
 
 $(document).ready(function() {
+
+  function isLoggedIn() {
+     return $.ajax({
+      url: `${apiUrl}/logged-in`,
+      type: 'GET',
+      success: (user) => {
+        return user.isLoggedIn;
+      },
+      error: (err) => {
+        throw err;
+      }
+    });
+  }
+
+  // If session times out, redirect user to login screen
   if (LOGGED_IN) {
-    // Display user movie list
-    getAndDisplayUserMovieList();
-    // Display most watched list
-    getAndDisplayWatchedList();
+    isLoggedIn().then((user) => {
+      if (user.isLoggedIn) {
+        // Display user movie list
+        getAndDisplayUserMovieList();
+        // Display most watched list
+        getAndDisplayWatchedList();
+
+        setInterval(()=> {
+          isLoggedIn().then((user) => {
+            if (!user.isLoggedIn) {
+              return window.location = '/users/login';
+            }
+          });
+        }, 3000);
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
   }
 
   // Get usersearch results
@@ -34,9 +64,6 @@ $(document).ready(function() {
       url: apiUrl + '/users/user-movies',
       type: 'GET',
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         callbackFn(data);
       },
       error: function(err) {
@@ -73,9 +100,6 @@ $(document).ready(function() {
       type: 'GET',
       data: search,
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         callbackFn(data);
       },
       error: function(err) {
@@ -113,9 +137,6 @@ $(document).ready(function() {
       url: apiUrl + '/users/watched',
       type: 'GET',
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         callbackFn(data);
       },
       error: function(err) {
@@ -154,9 +175,6 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         alert('Movie Added');
         getAndDisplayUserMovieList();
       }
@@ -175,9 +193,6 @@ $(document).ready(function() {
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
       success: function(data) {
-        if (data.redirect) {
-          window.location = data.redirect;
-        }
         alert('Movie Removed');
         getAndDisplayUserMovieList();
       }
@@ -199,9 +214,6 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         alert('Movie Watched');
         getAndDisplayWatchedList();
       }
@@ -222,9 +234,6 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        if (data.redirect) {
-          return window.location = data.redirect;
-        }
         alert('Movie Added');
         getAndDisplayUserMovieList();
       }
