@@ -10,6 +10,7 @@ if (ENV === 'development') {
 
 $(document).ready(function() {
 
+  // Refresh to see if user is still logged in
   function isLoggedIn() {
      return $.ajax({
       url: `${apiUrl}/logged-in`,
@@ -25,25 +26,21 @@ $(document).ready(function() {
 
   // If session times out, redirect user to login screen
   if (LOGGED_IN) {
-    isLoggedIn().then((user) => {
-      if (user.isLoggedIn) {
-        // Display user movie list
-        getAndDisplayUserMovieList();
-        // Display most watched list
-        getAndDisplayWatchedList();
+    // Display user movie list
+    getAndDisplayUserMovieList();
+    // Display most watched list
+    getAndDisplayWatchedList();
 
-        setInterval(()=> {
-          isLoggedIn().then((user) => {
-            if (!user.isLoggedIn) {
-              return window.location = '/users/login';
-            }
-          });
-        }, 3000);
-      }
-    })
-    .catch((err) => {
-      throw err;
-    });
+    setInterval(() => {
+      isLoggedIn().done((user) => {
+        if (!user.isLoggedIn) {
+          return window.location = '/users/login';
+        }
+      })
+      .fail((err) => {
+        throw err;
+      });
+    }, 5000);
   }
 
   // Get usersearch results
