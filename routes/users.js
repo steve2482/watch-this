@@ -191,7 +191,7 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
 // Remove movie from user list====================================
 // ===============================================================
 router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
-  User
+  return User
   .findOneAndUpdate(
     {userName: req.user.userName},
     {$pull: {movieIds: {movieId: req.body.movieId}}})
@@ -233,6 +233,9 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
             {$inc: {watched: 1}})
           .then(() => {
             res.status(201).json({message: 'Movie watched'});
+          })
+          .catch(err => {
+            throw err;
           });
       } else {
         let newMovie = new Movie({
@@ -248,10 +251,12 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
             throw err;
           } else {
             res.status(201).json({message: 'Movie watched'});
-            console.log(movie);
           }
         });
       }
+    })
+    .catch(err => {
+      throw err;
     });
 });
 
