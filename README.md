@@ -1,5 +1,4 @@
 # Watch This!  [![Build Status](https://travis-ci.org/steve2482/watch-this.svg?branch=master)](https://travis-ci.org/steve2482/watch-this)
-==========================================================================================================================================
 [Watch This!](https://watch-this.herokuapp.com/users/login) is a full-stack web application designed to help users remember movies suggested to them.
 
 ## Project Summary
