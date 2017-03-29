@@ -16,23 +16,23 @@ The design process began with writing user stories to settle on what a user coul
  - HTML5
  - CSS3
  - Javascript
- - jQuery
+ - [jQuery](https://jquery.com/)
 ### Back-End
- - Node
- - Express
- - Handlebars
- - Flash Messages
- - MongoDB
- - Mongoose
- - Passport - user authentication
- - Bcrypt - password hashing
+ - [Node](https://nodejs.org)
+ - [Express](https://expressjs.com/)
+ - [Handlebars](https://handlebarsjs.com)
+ - [Flash Messages](https://www.npmjs.com/package/flash)
+ - [MongoDB](https://www.mongodb.com/)
+ - [Mongoose](http://mongoosejs.com/)
+ - [Passport](http://passportjs.org/) - user authentication
+ - [Bcrypt](https://www.npmjs.com/package/bcrypt) - password hashing
 ### Testing and Deployment
- - Mocha
- - Chai
- - Faker
- - Travis CI
- - Heroku
- - mLab
+ - [Mocha](https://mochajs.org/)
+ - [Chai](http://chaijs.com/)
+ - [Faker](https://www.npmjs.com/package/Faker)
+ - [Travis CI](https://tracis-ci.org/)
+ - [Heroku](https://www.heroku.com/)
+ - [mLab](https://mlab.com/)
 
 ## Future Features
  - Suggestions based on the previously watched movie
