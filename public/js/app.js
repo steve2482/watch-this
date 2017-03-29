@@ -5,18 +5,17 @@ if (ENV === 'development') {
   apiUrl = 'https://watch-this.herokuapp.com';
 }
 
-// Document Ready===============================================
-// =============================================================
+// Document Ready=====================================================
+// ===================================================================
 
 $(document).ready(function() {
-
-  // Refresh to see if user is still logged in
+  // Refresh to see if user is still logged in========================
+  // =================================================================
   function isLoggedIn() {
     return $.ajax({
       url: `${apiUrl}/logged-in`,
       type: 'GET',
       success: function(user) {
-        console.log(user);
         return user.loggedIn;
       },
       error: function(err) {
@@ -25,13 +24,14 @@ $(document).ready(function() {
     });
   }
 
-  // Redirect user on session timeout
+  // Display user and watched list/Redirect user on session timeout===
+    // ===============================================================
   if (LOGGED_IN) {
     // Display user movie list
     getAndDisplayUserMovieList();
     // Display most watched list
     getAndDisplayWatchedList();
-
+    // Check if user is logged in
     setInterval(function() {
       isLoggedIn().done(function(user) {
         if (!user.loggedIn) {
@@ -44,20 +44,20 @@ $(document).ready(function() {
     }, 10000);
   }
 
-  // Get usersearch results
+  // Get usersearch results===========================================
+  // =================================================================
   $(document).on('click', '#search', function(e) {
     e.preventDefault();
     let searchKeyword = $('#user-search').val();
-    console.log(searchKeyword);
     getAndDisplaySearchData(searchKeyword);
     $('#user-search').val('');
   });
 
-  // DECLARING FUNCTIONS========================================
-  // ===========================================================
+  // DECLARING FUNCTIONS==============================================
+  // =================================================================
 
-  // Get and Display User List Data=============================
-  // ===========================================================
+  // Get and Display User List Data===================================
+  // =================================================================
   function getUserMovieList(callbackFn) {
     $.ajax({
       url: apiUrl + '/users/user-movies',
@@ -88,8 +88,8 @@ $(document).ready(function() {
     getUserMovieList(displayUserMovieList);
   }
 
-  // Get and Display Search Data=================================
-  // ============================================================
+  // Get and Display Search Data======================================
+  // =================================================================
   function getSearchData(searchKeyword, callbackFn) {
     let search = {
       usersearch: searchKeyword
@@ -129,8 +129,8 @@ $(document).ready(function() {
     getSearchData(searchKeyword, displaySearchData);
   }
 
-  // Get and Display Watched List Data=============================
-  // ===========================================================
+  // Get and Display Watched List Data================================
+  // =================================================================
   function getWatchedMovieList(callbackFn) {
     $.ajax({
       url: apiUrl + '/users/watched',
@@ -161,15 +161,14 @@ $(document).ready(function() {
     getWatchedMovieList(displayWatchedMovieList);
   }
 
-  // Event Listeners===============================================
-  // ==============================================================
+  // Event Listeners==================================================
+  // =================================================================
 
-  // Dropdown Menu=================================================
-  // ==============================================================
+  // Dropdown Menu====================================================
+  // =================================================================
   // Show dropdown
   $('.dropbtn').click(function(e) {
     e.preventDefault();
-    console.log('clicked');
     $('#drop').toggleClass('show');
   });
 
@@ -207,8 +206,8 @@ $(document).ready(function() {
     $('.user-list').hide();
   });
 
-  // Add movie to user list========================================
-  // ==============================================================
+  // Add movie to user list===========================================
+  // =================================================================
   $('.search-results-list').on('click', '.add', function(e) {
     let movie = {
       movieId: e.target.id,
@@ -228,8 +227,8 @@ $(document).ready(function() {
     });
   });
 
-  // Remove movie from user list==================================
-  // =============================================================
+  // Remove movie from user list======================================
+  // =================================================================
   $('.user-movies-list').on('click', '.remove', function(e) {
     let idToDelete = {
       movieId: e.target.id
@@ -247,8 +246,8 @@ $(document).ready(function() {
     });
   });
 
-  // Mark Movie as Watched=======================================
-  // ============================================================
+  // Mark Movie as Watched============================================
+  // =================================================================
   $('.user-movies-list').on('click', '.watched', function(e) {
     let movie = {
       movieId: e.target.id,
@@ -273,15 +272,14 @@ $(document).ready(function() {
     });
   });
 
-  // Add movie to user list FROM MOST WATCHED LIST=================
-  // ==============================================================
+  // Add movie to user list FROM MOST WATCHED LIST====================
+  // =================================================================
   $('.most-watched-list').on('click', '.add', function(e) {
     let movie = {
       movieId: e.target.id,
       moviePoster: $(this).prevAll('img').first().attr('src'),
       title: $(this).siblings('.title').text()
     };
-    console.log('title: ', movie.title);
     $.ajax({
       url: apiUrl + '/users/user-movies',
       type: 'POST',
@@ -295,16 +293,16 @@ $(document).ready(function() {
     });
   });
 
-  // Clear description after login=================================
-  // ==============================================================
+  // Clear description if user chooses================================
+  // =================================================================
   $('.got-it').click(function(e) {
     e.preventDefault();
     $('.description').hide();
     $('.watched-list, .results, .user-list').height(455);
   });
 
-  // Clear modal===================================================
-  // ==============================================================
+  // Clear modal======================================================
+  // =================================================================
   $('.modal-button').click(function() {
     $('.modal').hide();
     $('.feedback').text('');

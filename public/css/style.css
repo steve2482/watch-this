@@ -1,4 +1,4 @@
-/*border box REMOVE when complete===================================*/
+/*border box COMMENT OUT before sending to production===============*/
 /*==================================================================*/
 
 /*.container {
@@ -111,7 +111,9 @@ a {
   border: 1px solid black;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+  background-color: #f1f1f1
+}
 
 .show {
   display:block;
@@ -267,12 +269,12 @@ button:hover {
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 20%;
-    border-radius: 10px;
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 20%;
+  border-radius: 10px;
 }
 
 .modal-button {
@@ -327,7 +329,7 @@ button:hover {
   }
 
   .alert {
-  padding-top: 25px
+    padding-top: 25px
   }
 
   .dropbtn {
@@ -371,9 +373,9 @@ button:hover {
   }
 
   .got-it a:hover {
-  color: #bf0707;
-  text-decoration: underline;
-}
+    color: #bf0707;
+    text-decoration: underline;
+  }
 
   .search {
     visibility: visible;

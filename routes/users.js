@@ -19,20 +19,20 @@ const Movie = require('../models/movie');
 
 router.use(bodyParser.json());
 
-// Render Register Page===========================================
-// ===============================================================
+// Render Register Page===============================================
+// ===================================================================
 router.get('/register', function(req, res) {
   res.render('register');
 });
 
-// Render Login Page==============================================
-// ===============================================================
+// Render Login Page==================================================
+// ===================================================================
 router.get('/login', function(req, res) {
   res.render('login');
 });
 
-// Register User==================================================
-// ===============================================================
+// Register User======================================================
+// ===================================================================
 router.post('/register', function(req, res) {
   let name = req.body.name;
   let email = req.body.email;
@@ -40,7 +40,8 @@ router.post('/register', function(req, res) {
   let password = req.body.password;
   let password2 = req.body.password2;
 
-  // Validation
+  // Validation=======================================================
+  // =================================================================
   req.checkBody('name', 'Name is Required').notEmpty();
   req.checkBody('email', 'Email is Required').notEmpty();
   req.checkBody('email', 'Email is not valid').isEmail();
@@ -54,7 +55,6 @@ router.post('/register', function(req, res) {
     res.render('register', {
       errors: errors
     });
-    console.log(errors);
   } else {
     let newUser = new User({
       name: name,
@@ -109,12 +109,11 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// User Login=====================================================
-// ===============================================================
+// User Login=========================================================
+// ===================================================================
 router.post('/login',
   passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
   function(req, res) {
-    console.log('users.js line 109: ' + req.body);
     let isLoggedIn = !!req.user;
     res.redirect('/', {loggedIn: isLoggedIn});
   });
@@ -126,8 +125,8 @@ router.get('/logout', function(req, res) {
   res.redirect('/users/login');
 });
 
-// Get user movie list============================================
-// ===============================================================
+// Get user movie list================================================
+// ===================================================================
 router.get('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   User
   .findOne(
@@ -139,8 +138,8 @@ router.get('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   });
 });
 
-// User search call to TMDB API==================================
-// ==============================================================
+// User search call to TMDB API=======================================
+// ===================================================================
 router.get('/usersearch', authenticationMiddleware, jsonParser, (req, res) => {
   let searchKeyword = req.query.usersearch;
   let apiKey = process.env.TMDB_API_KEY;
@@ -159,8 +158,8 @@ router.get('/usersearch', authenticationMiddleware, jsonParser, (req, res) => {
   });
 });
 
-// Add movie to user list========================================
-// ==============================================================
+// Add movie to user list=============================================
+// ===================================================================
 router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   let movieInstance = 0;
   let user = req.user;
@@ -188,8 +187,8 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
   }
 });
 
-// Remove movie from user list====================================
-// ===============================================================
+// Remove movie from user list========================================
+// ===================================================================
 router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
   return User
   .findOneAndUpdate(
@@ -204,8 +203,8 @@ router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
     });
 });
 
-// Get Most Watched List==========================================
-// ===============================================================
+// Get Most Watched List==============================================
+// ===================================================================
 router.get('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   Movie
   .find().sort({watched: -1})
@@ -218,8 +217,8 @@ router.get('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   });
 });
 
-// Add Movie as Watched===========================================
-// ===============================================================
+// Add Movie as Watched===============================================
+// ===================================================================
 router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   return Movie
     .findOne({movieId: req.body.movieId})
@@ -245,9 +244,7 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
           watched: 1
         });
         Movie.createMovie(newMovie, function(err, movie) {
-          console.log('creating movie');
           if (err) {
-            console.log(err);
             throw err;
           } else {
             res.status(201).json({message: 'Movie watched'});

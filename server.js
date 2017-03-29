@@ -15,26 +15,31 @@ const {PORT, DATABASE_URL} = require('./config');
 const routes = require('./routes/index');
 const users = require('./routes/users');
 
-// Initialize App
+// Initialize App=====================================================
+// ===================================================================
 const app = express();
 
 mongoose.Promise = global.Promise;
 app.locals.env = process.env.ENVIRONMENT;
 
-// View Engine
+// View Engine========================================================
+// ===================================================================
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
 app.set('view engine', 'handlebars');
 
-// BodyParser Middleware
+// BodyParser Middleware==============================================
+// ===================================================================
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-// Set Static Folder
+// Set Static Folder==================================================
+// ===================================================================
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Express Session
+// Express Session====================================================
+// ===================================================================
 app.use(session({
   secret: 'secret',
   saveUninitialized: true,
@@ -43,11 +48,13 @@ app.use(session({
   rolling: true
 }));
 
-// Passport init
+// Passport init======================================================
+// ===================================================================
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Express Validator
+// Express Validator==================================================
+// ===================================================================
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
     let namespace = param.split('.'),
@@ -65,10 +72,12 @@ app.use(expressValidator({
   }
 }));
 
-// Connect Flash
+// Connect Flash======================================================
+// ===================================================================
 app.use(flash());
 
-// Global Vars
+// Global Vars========================================================
+// ===================================================================
 app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -77,15 +86,16 @@ app.use(function(req, res, next) {
   next();
 });
 
-// Routes
+// Routes=============================================================
+// ===================================================================
 app.use('/', routes);
 app.use('/users', users);
 
 // Set Port
 app.set('port', (process.env.PORT || 8080));
 
-// Start the server===============================================
-// ===============================================================
+// Start the server===================================================
+// ===================================================================
 let server;
 function runServer(databaseURL = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
@@ -105,8 +115,8 @@ function runServer(databaseURL = DATABASE_URL, port = PORT) {
   });
 }
 
-// Close the server==============================================
-// ==============================================================
+// Close the server===================================================
+// ===================================================================
 function closeServer() {
   return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {
