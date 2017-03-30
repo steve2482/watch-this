@@ -170,19 +170,18 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
     }
   }
   if (movieInstance === 0) {
-    return User.findOneAndUpdate(
-    {userName: user.userName},
-    {$push: {movieIds: req.body}},
-    {safe: true, upsert: true})
-    .exec()
-    .then(user => {
-      req.flash('messages', {'success_msg': 'Movie added to user list'});
-      res.locals.messages = req.flash();
-      res.status(201).json(user);
-    })
-    .catch(err => {
-      throw err;
-    });
+    return User
+    .findOneAndUpdate(
+      {userName: user.userName},
+      {$push: {movieIds: req.body}},
+      {new: true, upsert: true})
+      .exec()
+      .then(user => {
+        res.status(201).json(user);
+      })
+      .catch(err => {
+        throw err;
+      });
   } else {
     return res.status(500).json({message: 'Movie already exists in user list'});
   }

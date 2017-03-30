@@ -199,7 +199,7 @@ describe('testing', function() {
   // Test adding a movie to user list=================================
   // =================================================================
   // error
-  describe('POST to user movie list', function() {
+  describe('Add to user movie list', function() {
     it('should add a movie to users movie list and return a status 201 and the updated user', function() {
       const movie = {
         title: 'New Movie',
@@ -211,12 +211,10 @@ describe('testing', function() {
         return chai.request(app)
         .post('/users/user-movies')
         .query({userName: user.userName})
-        .send(JSON.stringify(movie))
+        .send(movie)
         .then(function(res) {
-          console.log(res.body);
           res.should.have.status(201);
-          res.body.should.be.json;
-          res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
+          res.body.should.include.keys('_id', 'userName', 'movieIds');
           res.body.movieIds.should.include(movie);
         })
         .catch(function(err) {
