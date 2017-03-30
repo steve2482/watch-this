@@ -54,6 +54,7 @@ router.post('/register', function(req, res) {
     res.render('register', {
       errors: errors
     });
+    console.log(errors);
   } else {
     let newUser = new User({
       name: name,
@@ -74,6 +75,8 @@ router.post('/register', function(req, res) {
   }
 });
 
+// Sign in strategy===================================================
+// ===================================================================
 passport.use(new LocalStrategy(
   function(username, password, done) {
     User.getUserByUsername(username, function(err, user) {
@@ -111,6 +114,7 @@ passport.deserializeUser(function(id, done) {
 router.post('/login',
   passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
   function(req, res) {
+    console.log('users.js line 109: ' + req.body);
     let isLoggedIn = !!req.user;
     res.redirect('/', {loggedIn: isLoggedIn});
   });
@@ -166,7 +170,7 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
     }
   }
   if (movieInstance === 0) {
-    User.findOneAndUpdate(
+    return User.findOneAndUpdate(
     {userName: user.userName},
     {$push: {movieIds: req.body}},
     {safe: true, upsert: true})
