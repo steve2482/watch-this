@@ -5,7 +5,7 @@
 Watch This! is a web application I designed and developed to help the everyday person 'remember' movies suggested to them by friends or family. It is designed to allow users to search for the movie suggested to them and store in a list specific to them. Watch This! also allows users to browse the most watched movies among the app's users and add them to thier list if they find one they may like.
 
 ## Screen Shots
-| <img alt="Landing Page/Login" src="https://github.com/steve2482/watch-this/blob/readme/public/images/Landing-page-login.jpg?raw=true" width="350"> | <img alt="Registration Page" src="https://github.com/steve2482/watch-this/blob/readme/public/images/registration.jpg?raw=true" width="350"> | <img alt="Dashboard" src="https://github.com/steve2482/watch-this/blob/readme/public/images/dashboard.jpg?raw=true" width="350"> |
+| <img alt="Landing Page/Login" src="https://github.com/steve2482/watch-this/blob/master/public/images/Landing-page-login.jpg?raw=true" width="350"> | <img alt="Registration Page" src="https://github.com/steve2482/watch-this/blob/master/public/images/registration.jpg?raw=true" width="350"> | <img alt="Dashboard" src="https://github.com/steve2482/watch-this/blob/master/public/images/dashboard.jpg?raw=true" width="350"> |
 |:---:|:---:|:---:|
 |Landing Page/Login | Register | Dashboard |
 ## Design Process
