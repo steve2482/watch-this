@@ -5,26 +5,41 @@ const should = chai.should();
 const expect = chai.expect;
 const mongoose = require('mongoose');
 const nock = require('nock');
+const bcrypt = require('bcryptjs');
+
+mongoose.Promise = global.Promise;
 
 const {app, runServer, closeServer} = require('../server');
 const User = require('../models/user');
+const Movie = require('../models/movie');
 const {TEST_DATABASE_URL} = require('../config');
 
 chai.use(chaiHttp);
+app.request.isAuthenticated = () => true;
+app.request.user = generateUser();
 
 // Generate a user====================================================
 // ===================================================================
 function generateUser() {
-  return {
+  return new User({
     userName: faker.internet.userName(),
     password: faker.internet.password(),
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
     movieIds: [{title: faker.name.title(), moviePoster: faker.image.imageUrl(), movieId: faker.random.number()}]
-  };
+  });
 }
 
-// Add some data to test with=========================================
+function generateMovie() {
+  return new Movie({
+    movieId: faker.random.number(),
+    moviePoster: faker.image.imageUrl(),
+    title: faker.name.title(),
+    watched: faker.random.number()
+  });
+}
+
+// Add some user data to test with====================================
 // ===================================================================
 function seedUsers() {
   console.log('Creating user data');
@@ -35,22 +50,15 @@ function seedUsers() {
   return User.insertMany(data);
 }
 
-// Find a user and sign them in
-function signUserIn(done) {
-  let username;
-  let password;
-  User
-    .findOne()
-    .exec()
-    .then(function(user) {
-      console.log(user);
-      username = user.userName;
-      password = user.password;
-      chai.request(app)
-        .post('users/login')
-        .field('username', username)
-        .field('password', password)
-    });
+// Add movies to watched list=========================================
+// ===================================================================
+function seedMovies() {
+  console.log('Creating watched movies');
+  const data = [];
+  for (let i = 0; i < 10; i++) {
+    data.push(generateMovie());
+  }
+  return Movie.insertMany(data);
 }
 
 // Remove test data===================================================
@@ -69,12 +77,11 @@ describe('testing', function() {
   });
 
   beforeEach(function() {
-    return seedUsers();
+    return Promise.all([
+      seedUsers(),
+      seedMovies()
+    ]);
   });
-
-  // beforeEach(function() {
-  //   signUserIn();
-  // });
 
   afterEach(function() {
     return removeUserData();
@@ -87,9 +94,9 @@ describe('testing', function() {
   // Test that HTML is shown==========================================
   // =================================================================
   describe('HTML', function() {
-    xit('should return the html page and a 200 status code', function() {
+    it('should return the html page and a 200 status code', function() {
       return chai.request(app)
-        .get('/')
+        .get('/users/login')
         .then(function(res) {
           res.should.have.status(200);
           res.should.be.html;
@@ -100,33 +107,30 @@ describe('testing', function() {
   // Test user registration===========================================
   // =================================================================
   describe('User registration', function() {
-    xit('should register a user returning a status of 201 and the user rep', function() {
+    it('should store the user in database and redirect to login page', function() {
+      let password = faker.internet.password();
       let newUser = {
-        userName: faker.internet.userName(),
-        password: faker.internet.password(),
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName()
+        username: faker.internet.userName(),
+        password: password,
+        password2: password,
+        name: faker.name.firstName() + ' ' + faker.name.lastName(),
+        email: faker.internet.email()
       };
-      let password = newUser.password;
       return chai.request(app)
-      .post('/register')
+      .post('/users/register')
       .send(newUser)
       .then(function(res) {
-        res.should.have.status(201);
-        res.body.should.be.an.object;
-        res.body.should.include.keys('userName', 'name');
-        return User.find({userName: newUser.userName});
+        res.should.be.html;
+        return User.findOne({userName: newUser.username});
       })
       .then(function(user) {
-        user[0].userName.should.equal(newUser.userName);
-        user[0].validatePassword(password)
-        .then(result => {
-          result.should.be.true;
+        user.userName.should.equal(newUser.username);
+        user.name.should.equal(newUser.name);
+        user.movieIds.should.be.array;
+        expect(user.movieIds).to.have.length(0);
+        bcrypt.compare(password, user.password, function(err, match) {
+          expect(match).to.be.true;
         });
-        user[0].firstName.should.equal(newUser.firstName);
-        user[0].lastName.should.equal(newUser.lastName);
-        user[0].movieIds.should.be.array;
-        expect(user[0].movieIds).to.have.length(0);
       });
     });
   });
@@ -148,23 +152,26 @@ describe('testing', function() {
         ]
       };
 
-      beforeEach(function() {
-        tmdbApi = nock('https://api.themoviedb.org')
-          .get('/3/search/movie')
-          .query({
-            api_key: apiKey,
-            query: 'undefined'
-          });
+      beforeEach(() => {
+        tmdbApi = nock('https://api.themoviedb.org/3/search')
+        .get('/movie')
+        .query({
+          api_key: apiKey,
+          query: 'cars'
+        })
+        .reply(200, expectedJson);
       });
-      xit('should return movie objects and a 200 status', function(done) {
-        const api = tmdbApi.reply(200, expectedJson);
-        chai.request(app)
-          .get('/usersearch')
-          .then(function(res, err) {
-            expect(api.isDone()).to.be.true;
+      it('should return movie objects and a 200 status', function() {
+        return chai.request(app)
+        .get('/users/usersearch')
+        .query({usersearch: 'cars'})
+        .then(function(res, err) {
+          // setTimeout(function() {
+            res.should.have.status(200);
+            expect(tmdbApi.isDone()).to.be.true;
             expect(res.body).to.deep.equal(expectedJson);
-            done();
-          });
+          // });
+        });
       });
     });
   });
@@ -172,15 +179,12 @@ describe('testing', function() {
   // Test Get user movie list=========================================
   // =================================================================
   describe('Get user movies', function() {
-    xit('should return list of movies for the specific user', function() {
-      return User
-      .findOne()
-      .exec()
+    it('should return list of movies for the specific user', function() {
+      return User.findOne()
       .then(function(user) {
-        let userName = user.userName;
         return chai.request(app)
-        .get('/user-movies')
-        .query({userName: userName})
+        .get('/users/user-movies')
+        .query({userName: user.userName})
         .then(function(res) {
           res.should.have.status(200);
           res.body.should.be.array;
@@ -194,52 +198,101 @@ describe('testing', function() {
 
   // Test adding a movie to user list=================================
   // =================================================================
-  // Does not work due to user auth currently hard coded==============
-  // =================================================================
-  describe('POST to user movie list', function() {
-    xit('should add a movie to users movie list and return a status 201 and the updated user', function() {
+  // error
+  describe('Add to user movie list', function() {
+    it('should add a movie to users movie list and return a status 201 and the updated user', function() {
       const movie = {
         title: 'New Movie',
         moviePoster: 'poster.jpg',
         movieId: 100
       };
-      return chai.request(app)
-      .post('/add-movie')
-      .send(movie)
-      .then(function(res) {
-        res.should.have.status(201);
-        res.body.should.be.json;
-        res.body.should.include.keys('_id', 'userName', 'password', 'firstName', 'lastName', 'movieIds');
-        res.body.movieIds.should.include(movie);
+      return User.findOne()
+      .then(function(user) {
+        return chai.request(app)
+        .post('/users/user-movies')
+        .query({userName: user.userName})
+        .send(movie)
+        .then(function(res) {
+          res.should.have.status(201);
+          res.body.should.include.keys('_id', 'userName', 'movieIds');
+          res.body.movieIds.should.include(movie);
+        })
+        .catch(function(err) {
+          throw err;
+        });
       });
     });
   });
 
   // Test removing a movie from user list=============================
   // =================================================================
+  // error
   describe('Remove movie from user list', function() {
-    xit('should remove a movie from the users list', function() {
-      let userName;
+    it('should remove a movie from the users list', function() {
       let idToDelete;
-      return User
-      .findOne()
-      .exec()
+      let userName;
+      return User.findOne()
       .then(function(user) {
+        idToDelete = {
+          movieId: user.movieIds[0].movieId
+        };
         userName = user.userName;
-        idToDelete = user.movieIds[0].movieId;
         return chai.request(app)
-        .put('/user-movies')
-        .send(idToDelete);
-      })
-      .then(function(res) {
-        res.should.have.status(204);
-        return User.find({userName: userName});
-      })
-        .then(function(user) {
-          for (let i = 0; i < user.movieIds.length; i++) {
-            expect(idToDelete).to.not.equal(user.movieIds[i].movieId);
-          }
+        .put('/users/user-movies')
+        .query({userName: userName})
+        .send(JSON.stringify(idToDelete))
+        .then(function(res) {
+          res.should.have.status(204);
+          return User.findOne({userName: userName})
+          .exec()
+          .then(function(user) {
+            for (var i = 0; i < user.movieIds.length; i++) {
+              expect(idToDelete).to.not.equal(user.movieIds[i].movieId);
+            }
+          });
         });
+      });
+    });
+  });
+
+  // Test GET watched list data=======================================
+  // =================================================================
+  describe('GET watched list data', function() {
+    it('should get list of watched movies', function() {
+      return chai.request(app)
+      .get('/users/watched')
+      .then(function(res) {
+        res.body.should.be.array;
+        res.body.should.have.lengthOf(10);
+        // res.body[1].should.be.instanceof(Movie);
+      });
+    });
+  });
+
+  // Test adding movie as watched=====================================
+  // =================================================================
+  describe('Add movie to watched list', function() {
+    it('should add a movie to watch list if it does not exist, if it does then it should add to the watched total', function() {
+      let movie = {
+        title: faker.name.title(),
+        moviePoster: faker.image.imageUrl(),
+        movieId: faker.random.number()
+      };
+      return chai.request(app)
+      .post('/users/watched')
+      .send(movie)
+      .then(function(res) {
+        res.should.have.status(201);
+        res.should.be.json;
+        return Movie
+        .findOne({movieId: movie.movieId})
+        .then(function(watchedMovie) {
+          watchedMovie.title.should.equal(movie.title);
+          watchedMovie.moviePoster.should.equal(movie.moviePoster);
+          watchedMovie.movieId.should.equal(movie.movieId);
+          watchedMovie.watched.should.equal(1);
+        });
+      });
     });
   });
 });

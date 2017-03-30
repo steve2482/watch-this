@@ -54,6 +54,7 @@ router.post('/register', function(req, res) {
     res.render('register', {
       errors: errors
     });
+    console.log(errors);
   } else {
     let newUser = new User({
       name: name,
@@ -74,6 +75,8 @@ router.post('/register', function(req, res) {
   }
 });
 
+// Sign in strategy===================================================
+// ===================================================================
 passport.use(new LocalStrategy(
   function(username, password, done) {
     User.getUserByUsername(username, function(err, user) {
@@ -111,6 +114,7 @@ passport.deserializeUser(function(id, done) {
 router.post('/login',
   passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', failureFlash: true}),
   function(req, res) {
+    console.log('users.js line 109: ' + req.body);
     let isLoggedIn = !!req.user;
     res.redirect('/', {loggedIn: isLoggedIn});
   });
@@ -166,19 +170,18 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
     }
   }
   if (movieInstance === 0) {
-    User.findOneAndUpdate(
-    {userName: user.userName},
-    {$push: {movieIds: req.body}},
-    {safe: true, upsert: true})
-    .exec()
-    .then(user => {
-      req.flash('messages', {'success_msg': 'Movie added to user list'});
-      res.locals.messages = req.flash();
-      res.status(201).json(user);
-    })
-    .catch(err => {
-      throw err;
-    });
+    return User
+    .findOneAndUpdate(
+      {userName: user.userName},
+      {$push: {movieIds: req.body}},
+      {new: true, upsert: true})
+      .exec()
+      .then(user => {
+        res.status(201).json(user);
+      })
+      .catch(err => {
+        throw err;
+      });
   } else {
     return res.status(500).json({message: 'Movie already exists in user list'});
   }
@@ -187,7 +190,7 @@ router.post('/user-movies', authenticationMiddleware, jsonParser, (req, res) => 
 // Remove movie from user list====================================
 // ===============================================================
 router.put('/user-movies', authenticationMiddleware, jsonParser, (req, res) => {
-  User
+  return User
   .findOneAndUpdate(
     {userName: req.user.userName},
     {$pull: {movieIds: {movieId: req.body.movieId}}})
@@ -208,6 +211,9 @@ router.get('/watched', authenticationMiddleware, jsonParser, (req, res) => {
   .exec()
   .then(data => {
     res.send(data);
+  })
+  .catch(err => {
+    throw err;
   });
 });
 
@@ -226,6 +232,9 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
             {$inc: {watched: 1}})
           .then(() => {
             res.status(201).json({message: 'Movie watched'});
+          })
+          .catch(err => {
+            throw err;
           });
       } else {
         let newMovie = new Movie({
@@ -241,10 +250,12 @@ router.post('/watched', authenticationMiddleware, jsonParser, (req, res) => {
             throw err;
           } else {
             res.status(201).json({message: 'Movie watched'});
-            console.log(movie);
           }
         });
       }
+    })
+    .catch(err => {
+      throw err;
     });
 });
 
