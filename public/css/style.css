@@ -31,6 +31,7 @@ body {
 
 ul {
   list-style: none;
+  padding: 0;
 }
 
 a {
@@ -141,7 +142,7 @@ button:hover {
 }
 
 .description {
-  text-align: left;
+  text-align: center;
   width: 100%;
 }
 
@@ -204,8 +205,9 @@ button:hover {
   }
 
 .list-heading {
-  margin: 0 auto 0 40px;
+  margin: 0 auto;
   text-decoration: underline;
+  padding: 0;
 }
 
 .movie-poster {

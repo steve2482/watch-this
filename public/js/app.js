@@ -220,8 +220,9 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function(data) {
-        $('.feedback').append('<p>Movie added to user list</p>');
-        $('.modal').show();
+        $('.instructions').text('Movie Added!');
+        $('.watched-list, .results, .user-list').height(410);
+        $('.description').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -239,8 +240,9 @@ $(document).ready(function() {
       data: JSON.stringify(idToDelete),
       contentType: 'application/json',
       success: function(data) {
-        $('.feedback').append('<p>Movie removed from user list</p>');
-        $('.modal').show();
+        $('.instructions').text('Movie Removed!');
+        $('.watched-list, .results, .user-list').height(410);
+        $('.description').show();
         getAndDisplayUserMovieList();
       }
     });
@@ -261,8 +263,9 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function() {
-        $('.feedback').append('<p>Movie watched</p>');
-        $('.modal').show();
+        $('.instructions').text('Movie Watched!');
+        $('.watched-list, .results, .user-list').height(410);
+        $('.description').show();
         getAndDisplayWatchedList();
         $(watchedButton).remove();
       },
@@ -286,8 +289,9 @@ $(document).ready(function() {
       data: JSON.stringify(movie),
       contentType: 'application/json',
       success: function() {
-        $('.feedback').append('<p>Movie added to user list</p>');
-        $('.modal').show();
+        $('.instructions').text('Movie Added!');
+        $('.watched-list, .results, .user-list').height(410);
+        $('.description').show();
         getAndDisplayUserMovieList();
       }
     });
